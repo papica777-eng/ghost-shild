@@ -560,7 +560,7 @@ pub async fn start_checkout_premium(
 /// O(log n) - Internal helper to create session via Stripe API
 async fn create_checkout_redirect(state: &Arc<StripeWebhookState>, plan_type: &str) -> Redirect {
     let client = reqwest::Client::new();
-    let domain = std::env::var("DOMAIN").unwrap_or_else(|_| "https://ghost-shild-fhll.onrender.com".to_string());
+    let domain = std::env::var("DOMAIN").unwrap_or_else(|_| "https://veritras.online".to_string());
     
     let price_id = match plan_type {
         "basic" => std::env::var("STRIPE_PRICE_BASIC").unwrap_or_else(|_| "price_1OtH...".to_string()),

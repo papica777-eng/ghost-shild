@@ -171,7 +171,7 @@ pub async fn paypal_webhook_handler(
 pub async fn start_checkout(
     State(state): State<Arc<PayPalState>>,
 ) -> Redirect {
-    let domain = std::env::var("DOMAIN").unwrap_or_else(|_| "https://ghost-shild-fhll.onrender.com".to_string());
+    let domain = std::env::var("DOMAIN").unwrap_or_else(|_| "https://veritras.online".to_string());
     
     // 1. Get Access Token
     let token = match state.get_access_token().await {
