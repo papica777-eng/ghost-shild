@@ -1,2 +1,12 @@
 .vercel
 .env*.local
+.env
+target/
+.git/
+node_modules/
+dist/
+build/
+.shadow.rs
+*.shadow.rs
+.DS_Store
+Thumbs.db
