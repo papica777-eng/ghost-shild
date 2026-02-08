@@ -1,2 +1,2 @@
-const API_BASE_URL = "https://unsummonable-unmindfully-evelynn.ngrok-free.dev";
+const API_BASE_URL = "https://ghost-shild-fhll.onrender.com";
 console.log("QANTUM CONFIG LOADED: " + API_BASE_URL);

@@ -24,21 +24,25 @@ class PaymentGateway {
         this.premiumKey = 'veritas_premium_access';
         this.modal = null;
         this.overlay = null;
-        this.init();
+        this.overlay = null;
 
         // ZKP Integration
         this.zk = new ZeroKnowledgeLicense();
+
+        // Expose instance for HTML onclick handlers
+        window.gatekeeper = this;
+        window.processPayment = (method) => this.processPayment(method);
+
+        // Run Logic
+        this.checkAccess();
     }
 
-    init() {
+    checkAccess() {
         if (!localStorage.getItem(this.premiumKey)) {
             this.renderPaywall();
         } else {
             console.log("IDENTITY VERIFIED. ACCESS PURIFIED.");
         }
-
-        window.processPayment = (method) => this.processPayment(method);
-        window.simulatePayment = (method) => this.processPayment(method);
     }
 
     renderPaywall() {
@@ -58,6 +62,20 @@ class PaymentGateway {
                         <div class="price">$49.99<span>/mo</span></div>
                         <button onclick="processPayment('stripe_basic')" class="btn-pay">PAY VIA STRIPE</button>
                     </div>
+                    
+                    <div class="tier zk-proof">
+                         <h3>ZERO-KNOWLEDGE</h3>
+                         <div class="price">PROOF<span>/year</span></div>
+                         <p class="zk-desc">Cryptographic Validation Only.</p>
+                         <button onclick="window.gatekeeper.activateLicense()" class="btn-pay zk-btn">
+                             PROVE OWNERSHIP
+                         </button>
+                    </div>
+                </div>
+                
+                <div id="payment-status" class="status-terminal">
+                    > SYSTEM READY. AWAITING PAYMENT OR PROOF...
+                </div>
                     
                     <div class="tier premium glitch-border">
                         <div class="recommended-badge">OMNI-ACCESS</div>
@@ -127,30 +145,52 @@ class PaymentGateway {
         statusEl.innerHTML = `> INITIATING ZERO-KNOWLEDGE PROOF...`;
         statusEl.style.color = '#00ffcc';
 
-        // 1. Generate local key (simulation of client-side key generation)
-        const key = this.zk.generateLicenseKey();
-        statusEl.innerHTML += `<br>> GENERATED KEY: ${key}`;
-        await this.sleep(600);
+        try {
+            // 1. Create License (Commitment + Secret)
+            statusEl.innerHTML += `<br>> GENERATING CRYPTOGRAPHIC COMMITMENTS...`;
+            const expiration = new Date();
+            expiration.setDate(expiration.getDate() + 365); // 1 year validity
 
-        // 2. Generate Proof
-        statusEl.innerHTML += `<br>> PROVING OWNERSHIP WITHOUT REVEALING KEY...`;
-        const proof = await this.zk.generateProof(key, 'enterprise');
-        await this.sleep(800);
+            // Create a license for 'enterprise' tier
+            const { commitment, secret } = await this.zk.createLicense('enterprise', expiration);
+            statusEl.innerHTML += `<br>> LICENSE KEY GENERATED: [HIDDEN]`;
+            statusEl.innerHTML += `<br>> COMMITMENT HASH: ${commitment.commitmentId.substring(0, 16)}...`;
+            await this.sleep(600);
 
-        // 3. Verify
-        statusEl.innerHTML += `<br>> VERIFYING ZK-SNARK PROOF...`;
-        const result = await this.zk.verifyProof(proof);
+            // 2. Create Proof Request (The Challenge)
+            statusEl.innerHTML += `<br>> GENERATING PROOF CHALLENGE...`;
+            const request = this.zk.createProofRequest('tier-membership', {
+                minimumTier: 'enterprise'
+            });
+            await this.sleep(600);
 
-        if (result.valid) {
-            statusEl.innerHTML += `<br>> <span style="color: #0f0">VERIFICATION SUCCESSFUL. TIER: ${result.tier.toUpperCase()}</span>`;
-            await this.sleep(1000);
-            localStorage.setItem(this.premiumKey, 'true');
-            this.unlock();
+            // 3. Generate Proof (The Response)
+            statusEl.innerHTML += `<br>> CALCULATING ZK-SNARK PROOF...`;
+            const proof = await this.zk.generateProof(secret, commitment, request);
+            statusEl.innerHTML += `<br>> PROOF GENERATED: ${proof.proofId}`;
+            await this.sleep(800);
 
-            // Reload to apply premium state
-            setTimeout(() => window.location.reload(), 500);
-        } else {
-            statusEl.innerHTML += `<br>> <span style="color: #f00">VERIFICATION FAILED. INVALID PROOF.</span>`;
+            // 4. Verify
+            statusEl.innerHTML += `<br>> VERIFYING PROOF ON-CHAIN...`;
+            const result = await this.zk.verifyProof(proof);
+
+            if (result.valid) {
+                statusEl.innerHTML += `<br>> <span style="color: #0f0">VERIFICATION SUCCESSFUL. TIER: ENTERPRISE</span>`;
+                statusEl.innerHTML += `<br>> <span style="color: #888">Gas Used: ${result.verificationTime}ms</span>`;
+                await this.sleep(1000);
+
+                localStorage.setItem(this.premiumKey, 'true');
+                this.unlock();
+
+                // Reload to apply premium state
+                setTimeout(() => window.location.reload(), 1500);
+            } else {
+                throw new Error("Proof verification failed");
+            }
+        } catch (error) {
+            console.error(error);
+            statusEl.innerHTML += `<br>> <span style="color: #f00">CRITICAL ERROR: ${error.message}</span>`;
+            statusEl.style.color = '#ff0000';
         }
     }
 
