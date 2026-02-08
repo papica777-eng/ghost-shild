@@ -10,3 +10,5 @@ build/
 *.shadow.rs
 .DS_Store
 Thumbs.db
+.stripe_node_src_backup/
+.vercel/

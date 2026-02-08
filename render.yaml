@@ -2,7 +2,7 @@ services:
   # RUST BACKEND SERVICE
   - type: web
     name: qantum-payments-backend
-    env: rust
+    runtime: rust
     plan: free
     region: frankfurt
     branch: master
@@ -38,20 +38,13 @@ services:
   # STATIC FRONTEND SERVICE
   - type: static
     name: veritas-web-frontend
-    env: static
-    plan: free
     region: frankfurt
     branch: master
     rootDir: Veritas_Web
     publishDir: .
-    routes:
-      - type: rewrite
-        source: /(.*)
-        destination: /index.html
 
-  # REDIS CACHE
-  - type: redis
-    name: qantum-payments-cache
+redis:
+  - name: qantum-payments-cache
     region: frankfurt
     plan: free
     ipAllowList: []
