@@ -7,12 +7,14 @@
 // ═══════════════════════════════════════════════════════════════════════════
 // ARCHITECT CONFIGURATION - ENTER REAL GATEWAY LINKS HERE
 // ═══════════════════════════════════════════════════════════════════════════
+const BASE_URL = (typeof API_BASE_URL !== 'undefined' ? API_BASE_URL : "https://qantum-payments-backend.onrender.com");
+
 const REAL_MODE_CONFIG = {
     ENABLED: true,
     LINKS: {
-        'stripe_basic': (typeof API_BASE_URL !== 'undefined' ? API_BASE_URL + '/stripe/checkout/basic' : ''),   // ARCHITECT: INSERT PRODUCTION STRIPE LINK
-        'stripe_premium': (typeof API_BASE_URL !== 'undefined' ? API_BASE_URL + '/stripe/checkout/premium' : ''), // ARCHITECT: INSERT PRODUCTION STRIPE LINK
-        'paypal_premium': (typeof API_BASE_URL !== 'undefined' ? API_BASE_URL + '/paypal/checkout' : ''), // ARCHITECT: INSERT PRODUCTION PAYPAL LINK
+        'stripe_basic': `${BASE_URL}/stripe/checkout/basic`,
+        'stripe_premium': `${BASE_URL}/stripe/checkout/premium`,
+        'paypal_premium': `${BASE_URL}/paypal/checkout`,
         'crypto_premium': ''  // ARCHITECT: INSERT PRODUCTION WALLET/PAYMENT LINK
     }
 };
