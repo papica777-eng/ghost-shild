@@ -33,7 +33,7 @@ services:
       - key: PAYPAL_MODE
         value: sandbox
       - key: DOMAIN
-        value: https://veritras.online
+        value: https://veritras.website
 
   # STATIC FRONTEND SERVICE
   - type: web
