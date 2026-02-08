@@ -1,4 +1,4 @@
-
+R
 // lwas_economy/src/payments/stripe_handler.rs
 // ARCHITECT: QANTUM AETERNA | STATUS: PRODUCTION_READY
 // Stripe Webhook Handler with Idempotency (Redis) & 0x4121 Verification
@@ -588,17 +588,26 @@ async fn create_checkout_redirect(state: &Arc<StripeWebhookState>, plan_type: &s
         .await
     {
         Ok(res) => {
-            if let Ok(json) = res.json::<serde_json::Value>().await {
-                 if let Some(url) = json.get("url").and_then(|u| u.as_str()) {
-                     println!("[CHECKOUT] 🔗 Redirecting to: {}", url);
-                     return Redirect::to(url);
+            let status = res.status();
+            if let Ok(body) = res.text().await {
+                 if status.is_success() {
+                     if let Ok(json) = serde_json::from_str::<serde_json::Value>(&body) {
+                         if let Some(url) = json.get("url").and_then(|u| u.as_str()) {
+                             println!("[CHECKOUT] 🔗 Redirecting to: {}", url);
+                             return Redirect::to(url);
+                         }
+                     }
                  }
+                 println!("[CHECKOUT] ❌ Stripe API Error ({}): {}", status, body);
+            } else {
+                 println!("[CHECKOUT] ❌ Stripe API Error ({}): <could not read body>", status);
             }
         }
-        Err(e) => println!("[CHECKOUT] ❌ Stripe API Error: {}", e),
+        Err(e) => println!("[CHECKOUT] ❌ Stripe API Request Failed: {}", e),
     }
 
     // Fallback if API fails
-    println!("[CHECKOUT] ⚠️ API failed, using fallback redirect");
-    Redirect::to("https://buy.stripe.com/test_placeholder")
+    println!("[CHECKOUT] ⚠️ API failed, redirecting to frontend error handler");
+    let error_redirect = format!("{}/validator.html?error=gateway_failure", domain);
+    Redirect::to(error_redirect)
 }
