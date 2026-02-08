@@ -10,6 +10,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const copyBtn = document.getElementById('copy-btn');
     const entropyLabel = document.getElementById('entropy-val');
 
+    // ARCHITECT: Check for global gateway errors redirected from backend
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('error') === 'gateway_failure') {
+        resultsPanel.classList.add('active');
+        resultGrid.innerHTML = '<div class="pill invalid" style="background: rgba(255,0,0,0.2); border: 1px solid #ff0000; color: #ff0000; width: 100%; text-align: center;">⚠ GATEWAY_CONNECTION_FAILURE: STRIPE API UNREACHABLE</div>';
+    }
+
     // Debounce function
     let timeout = null;
     const debounce = (func, wait) => {
