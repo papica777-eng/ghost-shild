@@ -7,7 +7,7 @@
 // ═══════════════════════════════════════════════════════════════════════════
 // ARCHITECT CONFIGURATION - ENTER REAL GATEWAY LINKS HERE
 // ═══════════════════════════════════════════════════════════════════════════
-const BASE_URL = (typeof API_BASE_URL !== 'undefined' ? API_BASE_URL : "https://unsummonable-unmindfully-evelynn.ngrok-free.dev");
+const BASE_URL = (typeof API_BASE_URL !== 'undefined' ? API_BASE_URL : "https://ghost-shild-fhll.onrender.com");
 
 const REAL_MODE_CONFIG = {
     ENABLED: true,
