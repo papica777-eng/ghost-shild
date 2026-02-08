@@ -7,7 +7,7 @@
 // ═══════════════════════════════════════════════════════════════════════════
 // ARCHITECT CONFIGURATION - ENTER REAL GATEWAY LINKS HERE
 // ═══════════════════════════════════════════════════════════════════════════
-const BASE_URL = (typeof API_BASE_URL !== 'undefined' ? API_BASE_URL : "https://qantum-payments-backend.onrender.com");
+const BASE_URL = (typeof API_BASE_URL !== 'undefined' ? API_BASE_URL : "https://ghost-shild-wmyf.onrender.com");
 
 const REAL_MODE_CONFIG = {
     ENABLED: true,
