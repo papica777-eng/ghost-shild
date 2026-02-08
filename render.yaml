@@ -1,0 +1,57 @@
+services:
+  # RUST BACKEND SERVICE
+  - type: web
+    name: qantum-payments-backend
+    env: rust
+    plan: free
+    region: frankfurt
+    branch: master
+    rootDir: PAYMENT/payments-backend
+    buildCommand: cargo build --release --bin main
+    startCommand: ./target/release/main
+    healthCheckPath: /health
+    envVars:
+      - key: PORT
+        value: 10000
+      - key: RUST_LOG
+        value: info
+      - key: REDIS_URL
+        fromService:
+          type: redis
+          name: qantum-payments-cache
+          property: connectionString
+      - key: STRIPE_SECRET_KEY
+        sync: false
+      - key: STRIPE_WEBHOOK_SECRET
+        sync: false
+      - key: STRIPE_PUBLISHABLE_KEY
+        sync: false
+      - key: PAYPAL_CLIENT_ID
+        sync: false
+      - key: PAYPAL_CLIENT_SECRET
+        sync: false
+      - key: PAYPAL_MODE
+        value: sandbox
+      - key: DOMAIN
+        value: https://veritras.online
+
+  # STATIC FRONTEND SERVICE
+  - type: static
+    name: veritas-web-frontend
+    env: static
+    plan: free
+    region: frankfurt
+    branch: master
+    rootDir: Veritas_Web
+    publishDir: .
+    routes:
+      - type: rewrite
+        source: /(.*)
+        destination: /index.html
+
+  # REDIS CACHE
+  - type: redis
+    name: qantum-payments-cache
+    region: frankfurt
+    plan: free
+    ipAllowList: []
