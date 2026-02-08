@@ -7,7 +7,7 @@
 // ═══════════════════════════════════════════════════════════════════════════
 // ARCHITECT CONFIGURATION - ENTER REAL GATEWAY LINKS HERE
 // ═══════════════════════════════════════════════════════════════════════════
-const BASE_URL = (typeof API_BASE_URL !== 'undefined' ? API_BASE_URL : "https://ghost-shild-wmyf.onrender.com");
+const BASE_URL = (typeof API_BASE_URL !== 'undefined' ? API_BASE_URL : "https://unsummonable-unmindfully-evelynn.ngrok-free.dev");
 
 const REAL_MODE_CONFIG = {
     ENABLED: true,
@@ -25,6 +25,9 @@ class PaymentGateway {
         this.modal = null;
         this.overlay = null;
         this.init();
+
+        // ZKP Integration
+        this.zk = new ZeroKnowledgeLicense();
     }
 
     init() {
@@ -74,8 +77,15 @@ class PaymentGateway {
                 <div class="terminal-status" id="payment-status">
                     > AWAITING SETTLEMENT...
                 </div>
+                
+                <div class="zk-verify-section" style="margin-top: 15px; border-top: 1px dashed rgba(0, 255, 204, 0.3); padding-top: 10px;">
+                    <button onclick="activateLicense()" class="btn-pay" style="background: rgba(0,0,0,0.5); border: 1px solid #00ffcc; font-size: 0.7em;">ACTIVATE ZK LICENSE (ENTERPRISE)</button>
+                </div>
             </div>
         `;
+
+        // Expose activation function globally
+        window.activateLicense = () => this.activateLicense();
 
         document.body.appendChild(this.overlay);
         document.body.style.overflow = 'hidden';
@@ -107,6 +117,40 @@ class PaymentGateway {
                 this.overlay.remove();
                 document.body.style.overflow = 'auto';
             }, 500);
+        }
+    }
+
+    async activateLicense() {
+        const statusEl = document.getElementById('payment-status');
+        if (!statusEl) return;
+
+        statusEl.innerHTML = `> INITIATING ZERO-KNOWLEDGE PROOF...`;
+        statusEl.style.color = '#00ffcc';
+
+        // 1. Generate local key (simulation of client-side key generation)
+        const key = this.zk.generateLicenseKey();
+        statusEl.innerHTML += `<br>> GENERATED KEY: ${key}`;
+        await this.sleep(600);
+
+        // 2. Generate Proof
+        statusEl.innerHTML += `<br>> PROVING OWNERSHIP WITHOUT REVEALING KEY...`;
+        const proof = await this.zk.generateProof(key, 'enterprise');
+        await this.sleep(800);
+
+        // 3. Verify
+        statusEl.innerHTML += `<br>> VERIFYING ZK-SNARK PROOF...`;
+        const result = await this.zk.verifyProof(proof);
+
+        if (result.valid) {
+            statusEl.innerHTML += `<br>> <span style="color: #0f0">VERIFICATION SUCCESSFUL. TIER: ${result.tier.toUpperCase()}</span>`;
+            await this.sleep(1000);
+            localStorage.setItem(this.premiumKey, 'true');
+            this.unlock();
+
+            // Reload to apply premium state
+            setTimeout(() => window.location.reload(), 500);
+        } else {
+            statusEl.innerHTML += `<br>> <span style="color: #f00">VERIFICATION FAILED. INVALID PROOF.</span>`;
         }
     }
 
