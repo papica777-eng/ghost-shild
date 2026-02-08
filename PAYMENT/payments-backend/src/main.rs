@@ -58,7 +58,7 @@ async fn main() {
 
     // Start server
     let listener = tokio::net::TcpListener::bind(addr).await.unwrap();
-    axum::serve(listener, app)
+    axum::serve(listener, app.layer(tower_http::cors::CorsLayer::permissive()))
         .with_graceful_shutdown(shutdown_signal())
         .await
         .unwrap();

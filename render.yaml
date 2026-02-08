@@ -36,12 +36,14 @@ services:
         value: https://veritras.online
 
   # STATIC FRONTEND SERVICE
-  - type: static
+  - type: web
     name: veritas-web-frontend
+    env: static
+    plan: free
     region: frankfurt
     branch: master
     rootDir: Veritas_Web
-    publishDir: .
+    staticPublishPath: .
 
 redis:
   - name: qantum-payments-cache
