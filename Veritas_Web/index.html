@@ -4,8 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>QANTUM NEXUS | The Central Hub</title>
-    <link rel="stylesheet" href="css/hub.css">
+    <title>VERITAS | The Universal Validator</title>
+    <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/paywall.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -15,80 +15,64 @@
 </head>
 
 <body>
-    <div class="scanlines"></div>
-    <div class="background-grid"></div>
+    <div class="grid-background"></div>
 
     <header>
         <div class="logo">
-            <span class="icon">💠</span> QANTUM NEXUS <span class="version">v2.0.0-OMNI</span>
+            <span class="icon">🛡️</span> VERITAS <span class="version">v1.0.0-SINGULARITY</span>
         </div>
-        <div class="system-status">
-            <span class="indicator"></span> SYSTEM OPTIMAL
-        </div>
+        <div class="status-indicator online">SYSTEM ONLINE</div>
     </header>
 
     <main>
-        <div class="module-grid">
-            <!-- MODULE 1: AMNESIA CURE -->
-            <a href="backpack.html" class="module-card" data-tilt>
-                <div class="card-content">
-                    <div class="icon">🧠</div>
-                    <h2>AMNESIA CURE</h2>
-                    <p>Neural Backpack & Memory Extension</p>
-                    <div class="status">ACTIVE</div>
-                </div>
-            </a>
+        <div class="validator-container">
+            <h1 class="glitch" data-text="TRUST NO INPUT">TRUST NO INPUT</h1>
+            <p class="subtitle">Universal Validation Engine | Zero Dependency | RFC Compliant</p>
 
-            <!-- MODULE 2: OPSVISION -->
-            <a href="vision.html" class="module-card" data-tilt>
-                <div class="card-content">
-                    <div class="icon">👁️</div>
-                    <h2>OPSVISION</h2>
-                    <p>Citadel & Neural HUD Interface</p>
-                    <div class="status">ONLINE</div>
+            <div class="input-wrapper">
+                <div class="glow-border"></div>
+                <label for="validator-input" class="sr-only">Enter data to validate</label>
+                <textarea id="validator-input" placeholder="Paste any string here (URL, Email, IP, Crypto Address...)"
+                    spellcheck="false"></textarea>
+                <div class="metrics">
+                    <span id="char-count">0 chars</span>
+                    <span id="entropy-label">ENTROPY: <span id="entropy-val" class="safe">LOW</span></span>
                 </div>
-            </a>
+            </div>
 
-            <!-- MODULE 3: VERITAS VALIDATOR -->
-            <a href="validator.html" class="module-card" data-tilt>
-                <div class="card-content">
-                    <div class="icon">🛡️</div>
-                    <h2>VERITAS VALIDATOR</h2>
-                    <p>Universal Input Sanitization</p>
-                    <div class="status">SECURE</div>
-                </div>
-            </a>
+            <div class="results-panel" id="results-panel">
+                <div class="panel-header">Analysis Result</div>
 
-            <!-- MODULE 4: ALGO-SCALE -->
-            <a href="finance.html" class="module-card" data-tilt>
-                <div class="card-content">
-                    <div class="icon">💸</div>
-                    <h2>ALGO-SCALE</h2>
-                    <p>Autonomous Wealth Generation</p>
-                    <div class="status">COMPOUNDING</div>
+                <div class="result-grid">
+                    <!-- Dynamic validation pills will appear here -->
+                    <div class="pill pending">Awaiting Input...</div>
                 </div>
-            </a>
 
-            <!-- MODULE 5: PARADOX CORE -->
-            <a href="paradox.html" class="module-card param-glitch" data-tilt>
-                <div class="card-content">
-                    <div class="icon">🔮</div>
-                    <h2>PARADOX CORE</h2>
-                    <p>Transcendence & Logic Engine</p>
-                    <div class="status">UNSTABLE</div>
+                <div class="sanitization-zone">
+                    <h3>SANITIZED OUTPUT</h3>
+                    <div class="code-block" id="sanitized-output">
+                        // Output will generate here
+                    </div>
+                    <button id="copy-btn" class="action-btn">COPY SAFE STRING</button>
                 </div>
-            </a>
+            </div>
         </div>
     </main>
 
     <footer>
-        <p>POWERED BY <strong>QANTUM</strong> | ARCHITECT: THE SOVEREIGN</p>
-        <p>© 2026 QANTUM HOLDING. ALL RIGHTS RESERVED.</p>
+        <div class="footer-content">
+            <p>POWERED BY <strong>QANTUM</strong> | ARCHITECT: THE SOVEREIGN</p>
+            <p class="copyright">© 2026 QANTUM HOLDING. ALL RIGHTS RESERVED.</p>
+        </div>
     </footer>
 
-    <script src="js/hub.js"></script>
-    <!-- Gatekeeper is optional on the Hub, but good for consistency/upsell if needed. 
-         Usually the Hub is free, modules are paid. Let's keep Hub free. -->
+    <!-- Core Logic -->
+    <!-- Core Logic: REAL ZK KERNEL -->
+    <script src="js/ZeroKnowledgeLicense.real.js"></script>
+    <script src="js/config.js"></script>
+    <script src="js/validator.js"></script>
+    <script src="js/gatekeeper.js"></script>
+    <script src="js/app.js"></script>
 </body>
 
 </html>
