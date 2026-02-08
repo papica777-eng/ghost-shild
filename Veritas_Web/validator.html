@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VERITAS | The Universal Validator</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/paywall.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Roboto+Mono:wght@300;400;500&display=swap"
+        rel="stylesheet">
+</head>
+
+<body>
+    <div class="grid-background"></div>
+
+    <header>
+        <div class="logo">
+            <span class="icon">🛡️</span> VERITAS <span class="version">v1.0.0-SINGULARITY</span>
+        </div>
+        <div class="status-indicator online">SYSTEM ONLINE</div>
+    </header>
+
+    <main>
+        <div class="validator-container">
+            <h1 class="glitch" data-text="TRUST NO INPUT">TRUST NO INPUT</h1>
+            <p class="subtitle">Universal Validation Engine | Zero Dependency | RFC Compliant</p>
+
+            <div class="input-wrapper">
+                <div class="glow-border"></div>
+                <label for="validator-input" class="sr-only">Enter data to validate</label>
+                <textarea id="validator-input" placeholder="Paste any string here (URL, Email, IP, Crypto Address...)"
+                    spellcheck="false"></textarea>
+                <div class="metrics">
+                    <span id="char-count">0 chars</span>
+                    <span id="entropy-label">ENTROPY: <span id="entropy-val" class="safe">LOW</span></span>
+                </div>
+            </div>
+
+            <div class="results-panel" id="results-panel">
+                <div class="panel-header">Analysis Result</div>
+
+                <div class="result-grid">
+                    <!-- Dynamic validation pills will appear here -->
+                    <div class="pill pending">Awaiting Input...</div>
+                </div>
+
+                <div class="sanitization-zone">
+                    <h3>SANITIZED OUTPUT</h3>
+                    <div class="code-block" id="sanitized-output">
+                        // Output will generate here
+                    </div>
+                    <button id="copy-btn" class="action-btn">COPY SAFE STRING</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <p>POWERED BY <strong>QANTUM</strong> | ARCHITECT: THE SOVEREIGN</p>
+            <p class="copyright">© 2026 QANTUM HOLDING. ALL RIGHTS RESERVED.</p>
+        </div>
+    </footer>
+
+    <!-- Core Logic -->
+    <script src="js/config.js"></script>
+    <script src="js/validator.js"></script>
+    <script src="js/gatekeeper.js"></script>
+    <script src="js/app.js"></script>
+</body>
+
+</html>
