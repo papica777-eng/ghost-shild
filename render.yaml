@@ -5,7 +5,7 @@ services:
     runtime: rust
     plan: free
     region: frankfurt
-    branch: master
+    branch: main
     rootDir: backend
     buildCommand: cargo build --release
     startCommand: ./target/release/main
@@ -39,7 +39,7 @@ services:
   - type: web
     name: veritas-web-frontend
     runtime: static
-    branch: master
+    branch: main
     rootDir: Veritas_Web
     staticPublishPath: .
 
