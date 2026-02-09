@@ -1,0 +1,54 @@
+[
+    {
+        "key": "STRIPE_SECRET_KEY",
+        "value": "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"
+    },
+    {
+        "key": "STRIPE_PUBLISHABLE_KEY",
+        "value": "pk_live_51SsgDP488IRV4Irp2dPzS39YlZDoYXJQtu1DaFHLHQH2b4a6c8d0ecur9h4UbwPci7GsZ201znHs0NAWLm9f00HNkLeGI2UbRvJ"
+    },
+    {
+        "key": "STRIPE_PRICE_BASIC",
+        "value": "price_1SsgbP488IRV4IrpFHZ90aKO"
+    },
+    {
+        "key": "STRIPE_PRICE_PREMIUM",
+        "value": "price_1SsgbP488IRV4IrpFHZ90aKO"
+    },
+    {
+        "key": "STRIPE_PAYMENT_MODE",
+        "value": "payment"
+    },
+    {
+        "key": "PORT",
+        "value": "10000"
+    },
+    {
+        "key": "DOMAIN",
+        "value": "https://veritras.website"
+    },
+    {
+        "key": "NEXT_PUBLIC_API_URL",
+        "value": "https://ghost-shild-122.onrender.com"
+    },
+    {
+        "key": "PAYPAL_CLIENT_ID",
+        "value": "AYWbO_5o_8WpPci7GsZ201znHs0NAWLm9f00HNkLeGI2"
+    },
+    {
+        "key": "PAYPAL_CLIENT_SECRET",
+        "value": "EG...placeholder"
+    },
+    {
+        "key": "LOG_LEVEL",
+        "value": "info"
+    },
+    {
+        "key": "NODE_ENV",
+        "value": "production"
+    },
+    {
+        "key": "REALITY_SEAL",
+        "value": "PHASE_OMEGA_FINAL_ATTAINED"
+    }
+]
