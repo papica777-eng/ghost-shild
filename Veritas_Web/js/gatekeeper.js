@@ -7,7 +7,7 @@
 // ═══════════════════════════════════════════════════════════════════════════
 // ARCHITECT CONFIGURATION - ENTER REAL GATEWAY LINKS HERE
 // ═══════════════════════════════════════════════════════════════════════════
-const BASE_URL = (typeof API_BASE_URL !== 'undefined' ? API_BASE_URL : "https://ghost-shild.onrender.com");
+const BASE_URL = (typeof API_BASE_URL !== 'undefined' ? API_BASE_URL : "https://ghost-shild-122.onrender.com");
 
 const REAL_MODE_CONFIG = {
     ENABLED: true,
