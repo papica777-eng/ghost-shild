@@ -38,9 +38,7 @@ services:
   # STATIC FRONTEND SERVICE
   - type: web
     name: veritas-web-frontend
-    env: static
-    plan: free
-    region: frankfurt
+    runtime: static
     branch: master
     rootDir: Veritas_Web
     staticPublishPath: .
