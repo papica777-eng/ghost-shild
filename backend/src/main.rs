@@ -46,6 +46,15 @@ async fn main() {
 
     // Combine into main app
     let app = Router::new()
+        .route(
+            "/",
+            get(|| async {
+                (
+                    StatusCode::OK,
+                    "QANTUM NEXUS BACKEND: ONLINE. ARCHITECT VERIFIED.",
+                )
+            }),
+        )
         .nest("/stripe", stripe_router)
         .nest("/paypal", paypal_router)
         .route("/health", get(|| async { StatusCode::OK }))
