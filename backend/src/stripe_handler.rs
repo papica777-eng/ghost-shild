@@ -602,9 +602,9 @@ async fn create_checkout_redirect(state: &Arc<StripeWebhookState>, plan_type: &s
     params.insert("line_items[0][price]", price_id.clone());
     params.insert("line_items[0][quantity]", "1".to_string());
 
-    // Auto-detect mode: if price_id starts with 'price_', it's usually recurring in testing,
-    // but we allow the architect to override via env or default to subscription
-    params.insert("mode", "subscription".to_string());
+    // Auto-detect mode or use override from ENV
+    let mode = std::env::var("STRIPE_PAYMENT_MODE").unwrap_or_else(|_| "payment".to_string());
+    params.insert("mode", mode);
 
     match client
         .post("https://api.stripe.com/v1/checkout/sessions")
