@@ -71,17 +71,12 @@ class PaymentGateway {
                              PROVE OWNERSHIP
                          </button>
                     </div>
-                </div>
-                
-                <div id="payment-status" class="status-terminal">
-                    > SYSTEM READY. AWAITING PAYMENT OR PROOF...
-                </div>
                     
                     <div class="tier premium glitch-border">
                         <div class="recommended-badge">OMNI-ACCESS</div>
                         <h3>ARCHITECT</h3>
                         <div class="price">$199<span>/mo</span></div>
-                        <ul>
+                        <ul class="features-list">
                             <li>Full Neural Control</li>
                             <li>Real-time Data Stream</li>
                             <li>Priority Support</li>
@@ -92,12 +87,12 @@ class PaymentGateway {
                     </div>
                 </div>
 
-                <div class="terminal-status" id="payment-status">
-                    > AWAITING SETTLEMENT...
+                <div id="payment-status" class="status-terminal">
+                    > SYSTEM READY. AWAITING PAYMENT...
                 </div>
                 
                 <div class="zk-verify-section" style="margin-top: 15px; border-top: 1px dashed rgba(0, 255, 204, 0.3); padding-top: 10px;">
-                    <button onclick="activateLicense()" class="btn-pay" style="background: rgba(0,0,0,0.5); border: 1px solid #00ffcc; font-size: 0.7em;">ACTIVATE ZK LICENSE (ENTERPRISE)</button>
+                    <button onclick="activateLicense()" class="btn-pay" style="background: rgba(0,0,0,0.5); border: 1px solid #00ffcc; font-size: 0.7em; width: 100%;">ACTIVATE ZK LICENSE (ENTERPRISE)</button>
                 </div>
             </div>
         `;
@@ -107,23 +102,24 @@ class PaymentGateway {
 
         document.body.appendChild(this.overlay);
         document.body.style.overflow = 'hidden';
+        console.log("QANTUM GATEKEEPER v2.1.1: PAYWALL MANIFESTED.");
     }
 
     async processPayment(method) {
         const statusEl = document.getElementById('payment-status');
         if (!statusEl) return;
 
-        statusEl.innerHTML = `> ESTABLISHING SECURE GATEWAY FOR ${method.toUpperCase()}...`;
-        await this.sleep(800);
+        statusEl.innerHTML = `> INITIATING ${method.toUpperCase()} SECURE CHANNEL...`;
+        statusEl.style.color = '#00ffcc';
+
+        await this.sleep(400); // Faster for mobile
 
         if (REAL_MODE_CONFIG.LINKS[method] && REAL_MODE_CONFIG.LINKS[method] !== '') {
-            statusEl.innerHTML = `<span style="color: #00ffcc;">> REDIRECTING TO SECURE CHECKOUT...</span>`;
-            await this.sleep(1200);
+            statusEl.innerHTML = `<span style="color: #00ffcc;">> REDIRECTING...</span>`;
             window.location.href = REAL_MODE_CONFIG.LINKS[method];
         } else {
-            statusEl.innerHTML = `<span style="color: #f00;">> ERROR: GATEWAY NOT CONFIGURED BY ARCHITECT.</span>`;
-            statusEl.style.borderColor = '#f00';
-            console.error(`Missing production link for: ${method}`);
+            statusEl.innerHTML = `<span style="color: #f00;">> ERROR: GATEWAY OFFLINE.</span>`;
+            console.error(`Missing link: ${method}`);
         }
     }
 
