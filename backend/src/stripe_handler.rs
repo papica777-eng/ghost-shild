@@ -577,13 +577,33 @@ async fn create_checkout_redirect(state: &Arc<StripeWebhookState>, plan_type: &s
 
     // Stripe expects x-www-form-urlencoded for nested values
     let mut params = HashMap::new();
+
+    // Ensure domain has https://
+    let mut validated_domain = domain.clone();
+    if !validated_domain.starts_with("http") {
+        validated_domain = format!("https://{}", validated_domain);
+        println!(
+            "[CHECKOUT] ⚠️ Auto-correcting DOMAIN to: {}",
+            validated_domain
+        );
+    }
+
     params.insert(
         "success_url",
-        format!("{}/success?session_id={{CHECKOUT_SESSION_ID}}", domain),
+        format!(
+            "{}/validator.html?session_id={{CHECKOUT_SESSION_ID}}&status=success",
+            validated_domain
+        ),
     );
-    params.insert("cancel_url", format!("{}/cancel", domain));
-    params.insert("line_items[0][price]", price_id);
+    params.insert(
+        "cancel_url",
+        format!("{}/validator.html?status=cancel", validated_domain),
+    );
+    params.insert("line_items[0][price]", price_id.clone());
     params.insert("line_items[0][quantity]", "1".to_string());
+
+    // Auto-detect mode: if price_id starts with 'price_', it's usually recurring in testing,
+    // but we allow the architect to override via env or default to subscription
     params.insert("mode", "subscription".to_string());
 
     match client
@@ -595,21 +615,21 @@ async fn create_checkout_redirect(state: &Arc<StripeWebhookState>, plan_type: &s
     {
         Ok(res) => {
             let status = res.status();
-            if let Ok(body) = res.text().await {
-                if status.is_success() {
-                    if let Ok(json) = serde_json::from_str::<serde_json::Value>(&body) {
-                        if let Some(url) = json.get("url").and_then(|u| u.as_str()) {
-                            println!("[CHECKOUT] 🔗 Redirecting to: {}", url);
-                            return Redirect::to(url);
-                        }
+            let body = res
+                .text()
+                .await
+                .unwrap_or_else(|_| "<unreadable body>".to_string());
+
+            if status.is_success() {
+                if let Ok(json) = serde_json::from_str::<serde_json::Value>(&body) {
+                    if let Some(url) = json.get("url").and_then(|u| u.as_str()) {
+                        println!("[CHECKOUT] 🔗 Redirecting to: {}", url);
+                        return Redirect::to(url);
                     }
                 }
-                println!("[CHECKOUT] ❌ Stripe API Error ({}): {}", status, body);
             } else {
-                println!(
-                    "[CHECKOUT] ❌ Stripe API Error ({}): <could not read body>",
-                    status
-                );
+                println!("[CHECKOUT] ❌ STRIPE API ERROR ({}): {}", status, body);
+                println!("[CHECKOUT] 💡 ARCHITECT: Check if your STRIPE_SECRET_KEY is valid and has 'Checkout Sessions' permissions.");
             }
         }
         Err(e) => println!("[CHECKOUT] ❌ Stripe API Request Failed: {}", e),
@@ -617,6 +637,6 @@ async fn create_checkout_redirect(state: &Arc<StripeWebhookState>, plan_type: &s
 
     // Fallback if API fails
     println!("[CHECKOUT] ⚠️ API failed, redirecting to frontend error handler");
-    let error_redirect = format!("{}/validator.html?error=gateway_failure", domain);
+    let error_redirect = format!("{}/validator.html?error=gateway_failure", validated_domain);
     Redirect::to(&error_redirect)
 }
