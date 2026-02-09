@@ -7,9 +7,9 @@ use axum::{
     http::{HeaderMap, StatusCode},
     response::{IntoResponse, Redirect},
 };
+use base64::{engine::general_purpose, Engine as _};
 use chrono::{DateTime, Utc};
 use reqwest::Client;
-use base64::{engine::general_purpose, Engine as _};
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use std::sync::Arc;
@@ -71,7 +71,7 @@ pub struct PayPalEvent {
 pub struct PayPalState {
     pub config: PayPalConfig,
     pub http_client: Client,
-    pub auth_token: Arc<RwLock<Option<(String, DateTime<Utc>)>>>, 
+    pub auth_token: Arc<RwLock<Option<(String, DateTime<Utc>)>>>,
 }
 
 impl PayPalState {
@@ -115,7 +115,10 @@ impl PayPalState {
             return Err(format!("Auth failed: {}", resp.status()));
         }
 
-        let body: serde_json::Value = resp.json().await.map_err(|e| format!("JSON error: {}", e))?;
+        let body: serde_json::Value = resp
+            .json()
+            .await
+            .map_err(|e| format!("JSON error: {}", e))?;
         let access_token = body["access_token"]
             .as_str()
             .ok_or("No access_token field")?
@@ -139,7 +142,7 @@ impl PayPalState {
 
 pub async fn paypal_webhook_handler(
     State(state): State<Arc<PayPalState>>,
-    headers: HeaderMap,
+    _headers: HeaderMap,
     Json(event): Json<PayPalEvent>,
 ) -> impl IntoResponse {
     println!("[PAYPAL] 📬 Received: {} ({})", event.event_type, event.id);
@@ -150,17 +153,26 @@ pub async fn paypal_webhook_handler(
 
     match event.event_type.as_str() {
         "PAYMENT.CAPTURE.COMPLETED" => {
-            println!("[PAYPAL] 💰 Payment Captured: {:?}", event.resource["amount"]);
+            println!(
+                "[PAYPAL] 💰 Payment Captured: {:?}",
+                event.resource["amount"]
+            );
             // Trigger logic: update DB, grant access, etc.
         }
         "BILLING.SUBSCRIPTION.CREATED" => {
-             println!("[PAYPAL] 📋 Subscription Created: {:?}", event.resource["id"]);
+            println!(
+                "[PAYPAL] 📋 Subscription Created: {:?}",
+                event.resource["id"]
+            );
         }
         "BILLING.SUBSCRIPTION.CANCELLED" => {
-             println!("[PAYPAL] ❌ Subscription Cancelled: {:?}", event.resource["id"]);
+            println!(
+                "[PAYPAL] ❌ Subscription Cancelled: {:?}",
+                event.resource["id"]
+            );
         }
         _ => {
-             println!("[PAYPAL] ℹ️ Unhandled: {}", event.event_type);
+            println!("[PAYPAL] ℹ️ Unhandled: {}", event.event_type);
         }
     }
 
@@ -168,11 +180,9 @@ pub async fn paypal_webhook_handler(
 }
 
 /// O(log n) - Start PayPal Checkout (Create Order)
-pub async fn start_checkout(
-    State(state): State<Arc<PayPalState>>,
-) -> Redirect {
+pub async fn start_checkout(State(state): State<Arc<PayPalState>>) -> Redirect {
     let domain = std::env::var("DOMAIN").unwrap_or_else(|_| "https://veritras.website".to_string());
-    
+
     // 1. Get Access Token
     let token = match state.get_access_token().await {
         Ok(t) => t,

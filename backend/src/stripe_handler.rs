@@ -1,4 +1,3 @@
-R
 // lwas_economy/src/payments/stripe_handler.rs
 // ARCHITECT: QANTUM AETERNA | STATUS: PRODUCTION_READY
 // Stripe Webhook Handler with Idempotency (Redis) & 0x4121 Verification
