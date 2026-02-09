@@ -24,7 +24,7 @@ pub struct PayPalConfig {
     pub client_id: String,
     pub client_secret: String,
     pub mode: String, // "sandbox" or "live"
-    pub webhook_id: String,
+    pub _webhook_id: String,
 }
 
 impl PayPalConfig {
@@ -35,7 +35,7 @@ impl PayPalConfig {
             client_secret: std::env::var("PAYPAL_CLIENT_SECRET")
                 .unwrap_or_else(|_| "sb_client_secret_placeholder".to_string()),
             mode: std::env::var("PAYPAL_MODE").unwrap_or_else(|_| "sandbox".to_string()),
-            webhook_id: std::env::var("PAYPAL_WEBHOOK_ID")
+            _webhook_id: std::env::var("PAYPAL_WEBHOOK_ID")
                 .unwrap_or_else(|_| "wh_id_placeholder".to_string()),
         }
     }
@@ -141,7 +141,7 @@ impl PayPalState {
 // ═══════════════════════════════════════════════════════════════════════════════
 
 pub async fn paypal_webhook_handler(
-    State(state): State<Arc<PayPalState>>,
+    State(_state): State<Arc<PayPalState>>,
     _headers: HeaderMap,
     Json(event): Json<PayPalEvent>,
 ) -> impl IntoResponse {

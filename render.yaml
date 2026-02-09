@@ -6,8 +6,8 @@ services:
     plan: free
     region: frankfurt
     branch: master
-    rootDir: PAYMENT/payments-backend
-    buildCommand: cargo build --release --bin main
+    rootDir: backend
+    buildCommand: cargo build --release
     startCommand: ./target/release/main
     healthCheckPath: /health
     envVars:
@@ -33,17 +33,16 @@ services:
       - key: PAYPAL_MODE
         value: sandbox
       - key: DOMAIN
-        value: https://ghost-shild-fhll.onrender.com
+        value: https://veritras.website
 
   # STATIC FRONTEND SERVICE
-  - type: web
+  - type: static
     name: veritas-web-frontend
-    env: static
     plan: free
     region: frankfurt
     branch: master
     rootDir: Veritas_Web
-    staticPublishPath: .
+    publishPath: .
 
 redis:
   - name: qantum-payments-cache

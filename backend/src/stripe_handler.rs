@@ -25,7 +25,7 @@ use uuid::Uuid;
 pub struct StripeConfig {
     pub secret_key: String,
     pub webhook_secret: String,
-    pub publishable_key: String,
+    pub _publishable_key: String,
     pub redis_url: Option<String>,
 }
 
@@ -36,7 +36,7 @@ impl StripeConfig {
                 .unwrap_or_else(|_| "sk_test_placeholder".to_string()),
             webhook_secret: std::env::var("STRIPE_WEBHOOK_SECRET")
                 .unwrap_or_else(|_| "whsec_placeholder".to_string()),
-            publishable_key: std::env::var("STRIPE_PUBLISHABLE_KEY")
+            _publishable_key: std::env::var("STRIPE_PUBLISHABLE_KEY")
                 .unwrap_or_else(|_| "pk_test_placeholder".to_string()),
             redis_url: std::env::var("REDIS_URL").ok(),
         }
@@ -101,7 +101,9 @@ pub enum EventResult {
 impl IdempotencyStore {
     pub fn new(redis_url: Option<String>) -> Self {
         let redis_client = redis_url.and_then(|url| {
-            redis::Client::open(url).map_err(|e| println!("❌ Redis connect error: {}", e)).ok()
+            redis::Client::open(url)
+                .map_err(|e| println!("❌ Redis connect error: {}", e))
+                .ok()
         });
 
         Self {
@@ -113,12 +115,15 @@ impl IdempotencyStore {
     /// O(1) - Check if event already processed
     pub async fn is_processed(&self, event_id: &str) -> bool {
         if let Some(client) = &self.redis_client {
-             if let Ok(mut con) = client.get_multiplexed_async_connection().await {
-                 let exists: bool = con.exists(format!("event:{}", event_id)).await.unwrap_or(false);
-                 return exists;
-             }
+            if let Ok(mut con) = client.get_multiplexed_async_connection().await {
+                let exists: bool = con
+                    .exists(format!("event:{}", event_id))
+                    .await
+                    .unwrap_or(false);
+                return exists;
+            }
         }
-        
+
         let store = self.processed_events_fallback.read().await;
         store.contains_key(event_id)
     }
@@ -126,11 +131,14 @@ impl IdempotencyStore {
     /// O(1) - Mark event as processed with idempotency guarantee
     pub async fn mark_processed(&self, event_id: String, result: EventResult) {
         if let Some(client) = &self.redis_client {
-             if let Ok(mut con) = client.get_multiplexed_async_connection().await {
-                 let json = serde_json::to_string(&result).unwrap();
-                 let _: () = con.set_ex(format!("event:{}", event_id), json, 86400).await.unwrap_or(()); // 24h expire
-                 return;
-             }
+            if let Ok(mut con) = client.get_multiplexed_async_connection().await {
+                let json = serde_json::to_string(&result).unwrap();
+                let _: () = con
+                    .set_ex(format!("event:{}", event_id), json, 86400)
+                    .await
+                    .unwrap_or(()); // 24h expire
+                return;
+            }
         }
 
         let mut store = self.processed_events_fallback.write().await;
@@ -151,7 +159,7 @@ impl IdempotencyStore {
 
 #[derive(Clone)]
 pub struct SubscriptionManager {
-    // In production, use DB. For now, in-memory is fine for demo, 
+    // In production, use DB. For now, in-memory is fine for demo,
     // or Redis could also be used here. Keeping in-memory/Redis simplicity.
     subscriptions: Arc<RwLock<HashMap<String, UserSubscription>>>,
 }
@@ -228,9 +236,9 @@ impl SubscriptionManager {
     }
 
     /// Get subscription by email
-    pub async fn get_by_email(&self, email: &str) -> Option<UserSubscription> {
+    pub async fn _get_by_email(&self, email: &str) -> Option<Uuid> {
         let store = self.subscriptions.read().await;
-        store.get(email).cloned()
+        store.get(email).map(|sub| sub.user_id)
     }
 
     /// Cancel subscription
@@ -429,7 +437,7 @@ async fn handle_checkout_completed(
 }
 
 async fn handle_invoice_paid(
-    state: &StripeWebhookState,
+    _state: &StripeWebhookState,
     event: &StripeEvent,
 ) -> Result<(), String> {
     let customer_email = event
@@ -458,7 +466,7 @@ async fn handle_invoice_paid(
 }
 
 async fn handle_payment_failed(
-    state: &StripeWebhookState,
+    _state: &StripeWebhookState,
     event: &StripeEvent,
 ) -> Result<(), String> {
     let customer_email = event
@@ -522,7 +530,7 @@ pub struct PortalSessionResponse {
 
 /// Create Stripe Customer Portal session
 pub async fn create_portal_session(
-    State(state): State<Arc<StripeWebhookState>>,
+    State(_state): State<Arc<StripeWebhookState>>,
     Json(payload): Json<serde_json::Value>,
 ) -> impl IntoResponse {
     let customer_id = payload["customer_id"].as_str().unwrap_or("");
@@ -543,16 +551,12 @@ pub async fn create_portal_session(
 // ═══════════════════════════════════════════════════════════════════════════════
 
 /// O(1) - Initiates Stripe Checkout for Basic Plan
-pub async fn start_checkout_basic(
-    State(state): State<Arc<StripeWebhookState>>,
-) -> Redirect {
+pub async fn start_checkout_basic(State(state): State<Arc<StripeWebhookState>>) -> Redirect {
     create_checkout_redirect(&state, "basic").await
 }
 
 /// O(1) - Initiates Stripe Checkout for Premium Plan
-pub async fn start_checkout_premium(
-    State(state): State<Arc<StripeWebhookState>>,
-) -> Redirect {
+pub async fn start_checkout_premium(State(state): State<Arc<StripeWebhookState>>) -> Redirect {
     create_checkout_redirect(&state, "premium").await
 }
 
@@ -560,24 +564,27 @@ pub async fn start_checkout_premium(
 async fn create_checkout_redirect(state: &Arc<StripeWebhookState>, plan_type: &str) -> Redirect {
     let client = reqwest::Client::new();
     let domain = std::env::var("DOMAIN").unwrap_or_else(|_| "https://veritras.website".to_string());
-    
+
     let price_id = match plan_type {
-        "basic" => std::env::var("STRIPE_PRICE_BASIC").unwrap_or_else(|_| "price_1OtH...".to_string()),
-        "premium" => std::env::var("STRIPE_PRICE_PREMIUM").unwrap_or_else(|_| "price_1OtH...".to_string()),
+        "basic" => {
+            std::env::var("STRIPE_PRICE_BASIC").unwrap_or_else(|_| "price_1OtH...".to_string())
+        }
+        "premium" => {
+            std::env::var("STRIPE_PRICE_PREMIUM").unwrap_or_else(|_| "price_1OtH...".to_string())
+        }
         _ => return Redirect::to("/error"),
     };
 
-    let params = serde_json::json!({
-        "success_url": format!("{}/success?session_id={{CHECKOUT_SESSION_ID}}", domain),
-        "cancel_url": format!("{}/cancel", domain),
-        "line_items": [
-            {
-                "price": price_id,
-                "quantity": 1,
-            },
-        ],
-        "mode": "subscription",
-    });
+    // Stripe expects x-www-form-urlencoded for nested values
+    let mut params = HashMap::new();
+    params.insert(
+        "success_url",
+        format!("{}/success?session_id={{CHECKOUT_SESSION_ID}}", domain),
+    );
+    params.insert("cancel_url", format!("{}/cancel", domain));
+    params.insert("line_items[0][price]", price_id);
+    params.insert("line_items[0][quantity]", "1".to_string());
+    params.insert("mode", "subscription".to_string());
 
     match client
         .post("https://api.stripe.com/v1/checkout/sessions")
@@ -589,17 +596,20 @@ async fn create_checkout_redirect(state: &Arc<StripeWebhookState>, plan_type: &s
         Ok(res) => {
             let status = res.status();
             if let Ok(body) = res.text().await {
-                 if status.is_success() {
-                     if let Ok(json) = serde_json::from_str::<serde_json::Value>(&body) {
-                         if let Some(url) = json.get("url").and_then(|u| u.as_str()) {
-                             println!("[CHECKOUT] 🔗 Redirecting to: {}", url);
-                             return Redirect::to(url);
-                         }
-                     }
-                 }
-                 println!("[CHECKOUT] ❌ Stripe API Error ({}): {}", status, body);
+                if status.is_success() {
+                    if let Ok(json) = serde_json::from_str::<serde_json::Value>(&body) {
+                        if let Some(url) = json.get("url").and_then(|u| u.as_str()) {
+                            println!("[CHECKOUT] 🔗 Redirecting to: {}", url);
+                            return Redirect::to(url);
+                        }
+                    }
+                }
+                println!("[CHECKOUT] ❌ Stripe API Error ({}): {}", status, body);
             } else {
-                 println!("[CHECKOUT] ❌ Stripe API Error ({}): <could not read body>", status);
+                println!(
+                    "[CHECKOUT] ❌ Stripe API Error ({}): <could not read body>",
+                    status
+                );
             }
         }
         Err(e) => println!("[CHECKOUT] ❌ Stripe API Request Failed: {}", e),
@@ -608,5 +618,5 @@ async fn create_checkout_redirect(state: &Arc<StripeWebhookState>, plan_type: &s
     // Fallback if API fails
     println!("[CHECKOUT] ⚠️ API failed, redirecting to frontend error handler");
     let error_redirect = format!("{}/validator.html?error=gateway_failure", domain);
-    Redirect::to(error_redirect)
+    Redirect::to(&error_redirect)
 }
