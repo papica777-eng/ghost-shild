@@ -33,7 +33,7 @@ services:
       - key: PAYPAL_MODE
         value: sandbox
       - key: DOMAIN
-        value: https://veritras.website
+        value: https://ghost-shild-fhll.onrender.com
 
   # STATIC FRONTEND SERVICE
   - type: web
