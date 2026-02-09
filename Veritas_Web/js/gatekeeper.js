@@ -15,7 +15,7 @@ const REAL_MODE_CONFIG = {
         'stripe_basic': `${BASE_URL}/stripe/checkout/basic`,
         'stripe_premium': `${BASE_URL}/stripe/checkout/premium`,
         'paypal_premium': `${BASE_URL}/paypal/checkout`,
-        'crypto_premium': ''  // ARCHITECT: INSERT PRODUCTION WALLET/PAYMENT LINK
+        'crypto_premium': 'https://veritras.website/crypto-vault'
     }
 };
 
