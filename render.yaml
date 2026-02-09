@@ -34,6 +34,10 @@ services:
         value: sandbox
       - key: DOMAIN
         value: https://veritras.website
+      - key: STRIPE_PRICE_BASIC
+        sync: false
+      - key: STRIPE_PRICE_PREMIUM
+        sync: false
 
   # STATIC FRONTEND SERVICE
   - type: web
