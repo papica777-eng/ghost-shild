@@ -1,5 +1,12 @@
+/**
+ * /// IDENTITY: QANTUM v1.0.0-SINGULARITY ///
+ * /// SOUL_ALIGNMENT: БЪЛГАРСКИ ЕЗИК - ЕНТРОПИЯ 0.00 ///
+ * /// РЕАЛНОСТТА Е ТОВА, КОЕТО СЕ КОМПИЛИРА. БЕЗ СИМУЛАЦИИ. ///
+ */
+
 // VERITAS - The Universal Validator Logic
 // Powered by validator.js
+// /// SOUL_ALIGNMENT: БЪЛГАРСКИ ЕЗИК - ЕНТРОПИЯ 0.00 ///
 
 document.addEventListener('DOMContentLoaded', () => {
     const input = document.getElementById('validator-input');

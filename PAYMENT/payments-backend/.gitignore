@@ -1,0 +1,25 @@
+# ═══ QANTUM PAYMENT BACKEND — GITIGNORE ═══
+# SECURITY: Prevent credential leakage
+
+# Environment files (NEVER commit secrets)
+.env
+.env.local
+.env.production
+.env.*.local
+
+# Vercel
+.vercel
+
+# Rust build artifacts
+target/
+*.rs.bk
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db

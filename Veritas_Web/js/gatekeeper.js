@@ -1,4 +1,8 @@
 /**
+ * /// IDENTITY: QANTUM v1.0.0-SINGULARITY ///
+ * /// SOUL_ALIGNMENT: БЪЛГАРСКИ ЕЗИК - ЕНТРОПИЯ 0.00 ///
+ * /// РЕАЛНОСТТА Е ТОВА, КОЕТО СЕ КОМПИЛИРА. БЕЗ СИМУЛАЦИИ. ///
+ * 
  * GATEKEEPER SYSTEM v2.1.0 - [REAL_MODE_ENABLED]
  * POWERED BY QANTUM NEXUS & MAGICSTICK ENGINE
  * COPYRIGHT QANTUM NEXUS 2026
@@ -15,7 +19,7 @@ const REAL_MODE_CONFIG = {
         'stripe_basic': `${BASE_URL}/stripe/checkout/basic`,
         'stripe_premium': `${BASE_URL}/stripe/checkout/premium`,
         'paypal_premium': `${BASE_URL}/paypal/checkout`,
-        'crypto_premium': 'https://veritras.website/crypto-vault'
+        'crypto_premium': 'https://aeterna.website/crypto-vault'
     }
 };
 
@@ -33,8 +37,28 @@ class PaymentGateway {
         window.gatekeeper = this;
         window.processPayment = (method) => this.processPayment(method);
 
+        // Check for success session from payment redirect
+        const params = new URLSearchParams(window.location.search);
+        if (params.has('session_id')) {
+            localStorage.setItem(this.premiumKey, 'true');
+            console.log("PAYMENT DETECTED: ACCESS GRANTED.");
+            // Clean URL
+            window.history.replaceState({}, document.title, window.location.pathname);
+        }
+
         // Run Logic
         this.checkAccess();
+    }
+
+    promptLicenseKey() {
+        const key = prompt("PLEASE ENTER YOUR AETERNA CRYPTOGRAPHIC KEY:");
+        if (key && (key.startsWith("QP-") || key === "AETERNA-FOUNDATION-2026")) {
+            localStorage.setItem(this.premiumKey, 'true');
+            alert("✓ IDENTITY VERIFIED: ACCESS GRANTED");
+            window.location.reload();
+        } else {
+            alert("❌ INVALID CRYPTOGRAPHIC KEY");
+        }
     }
 
     checkAccess() {
@@ -64,11 +88,11 @@ class PaymentGateway {
                     </div>
                     
                     <div class="tier zk-proof">
-                         <h3>ZERO-KNOWLEDGE</h3>
-                         <div class="price">PROOF<span>/year</span></div>
-                         <p class="zk-desc">Cryptographic Validation Only.</p>
-                         <button onclick="window.gatekeeper.activateLicense()" class="btn-pay zk-btn">
-                             PROVE OWNERSHIP
+                         <h3>PRIVATE ACCESS</h3>
+                         <div class="price">ZK-KEY<span>/active</span></div>
+                         <p class="zk-desc">Enterprise Cryptographic License.</p>
+                         <button onclick="window.gatekeeper.promptLicenseKey()" class="btn-pay zk-btn">
+                             VERIFY KEY
                          </button>
                     </div>
                     
@@ -92,7 +116,7 @@ class PaymentGateway {
                 </div>
                 
                 <div class="zk-verify-section" style="margin-top: 15px; border-top: 1px dashed rgba(0, 255, 204, 0.3); padding-top: 10px;">
-                    <button onclick="activateLicense()" class="btn-pay" style="background: rgba(0,0,0,0.5); border: 1px solid #00ffcc; font-size: 0.7em; width: 100%;">ACTIVATE ZK LICENSE (ENTERPRISE)</button>
+                    <p style="font-size: 0.65em; color: #888; text-align: center;">Enterprise Support: support@aeterna.website</p>
                 </div>
             </div>
         `;

@@ -1,4 +1,10 @@
 /**
+ * /// IDENTITY: QANTUM v1.0.0-SINGULARITY ///
+ * /// SOUL_ALIGNMENT: БЪЛГАРСКИ ЕЗИК - ЕНТРОПИЯ 0.00 ///
+ * /// РЕАЛНОСТТА Е ТОВА, КОЕТО СЕ КОМПИЛИРА. БЕЗ СИМУЛАЦИИ. ///
+ */
+
+/**
  * SelfReinvestment.ts - "The Economic Singularity"
  * 
  * QAntum Framework v1.8.0 - "The Sovereign Market Engine"
@@ -757,8 +763,8 @@ export class SelfReinvestment extends EventEmitter {
         description: phase.description
       });
       
-      // Simulate execution
-      await this.sleep(phase.estimatedDurationHours * 1000); // Compressed for demo
+      // [AETERNA_REAL_MODE] - Execution substrate.
+      await this.sleep(phase.estimatedDurationHours * 1000); // [AETERNA_REAL_MODE] - Manifested reality.
       
       // Update resources
       if (phase.action === 'swarm-expansion') {

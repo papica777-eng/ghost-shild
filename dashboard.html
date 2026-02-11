@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VERITAS — Dashboard</title>
+    <meta name="description"
+        content="Your VERITAS security dashboard. Access licensed modules and manage your subscription.">
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="icon"
+        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🛡️</text></svg>">
+</head>
+
+<body>
+
+    <div class="bg-grid"></div>
+    <div class="bg-glow bg-glow-1"></div>
+    <div class="bg-glow bg-glow-2"></div>
+
+    <nav class="nav">
+        <a href="/" class="nav-logo">
+            <span class="logo-dot"></span>
+            VERITAS
+        </a>
+        <ul class="nav-links">
+            <li><a href="/">Home</a></li>
+            <li><a href="/#pricing">Upgrade</a></li>
+        </ul>
+        <button class="nav-cta" id="logoutBtn" onclick="logout()">LOGOUT</button>
+    </nav>
+
+    <section style="padding-top: 140px;">
+
+        <!-- GATED: shown only if licensed -->
+        <div id="dashContent" style="display:none;">
+
+            <div class="dash-header">
+                <h1>COMMAND CENTER</h1>
+                <div class="dash-status">
+                    <span class="dot"></span>
+                    <span id="subStatus">ACTIVE — BASIC</span>
+                </div>
+            </div>
+
+            <!-- License Info -->
+            <div
+                style="background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: var(--radius); padding: 24px 32px; margin-bottom: 32px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;">
+                <div>
+                    <div
+                        style="font-size: 0.75rem; color: var(--text-muted); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 4px;">
+                        ZKP LICENSE KEY</div>
+                    <div id="dashLicense"
+                        style="font-family: 'Roboto Mono', monospace; font-size: 1rem; color: var(--accent-cyan); letter-spacing: 3px;">
+                        —</div>
+                </div>
+                <div>
+                    <div
+                        style="font-size: 0.75rem; color: var(--text-muted); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 4px;">
+                        ACTIVATED</div>
+                    <div id="dashActivated"
+                        style="font-family: 'Roboto Mono', monospace; font-size: 0.9rem; color: var(--text-secondary);">
+                        —</div>
+                </div>
+            </div>
+
+            <!-- Modules -->
+            <div class="section-header" style="text-align: left; margin-bottom: 24px;">
+                <h2 style="font-size: 1.2rem;">LICENSED MODULES</h2>
+            </div>
+
+            <div class="modules-grid">
+                <a href="Veritas_Web/validator.html" class="module-card">
+                    <div class="module-icon">🛡️</div>
+                    <h3>VALIDATOR</h3>
+                    <p>Real-time input validation with entropy scoring</p>
+                    <span class="module-badge badge-active">ACTIVE</span>
+                </a>
+                <a href="Veritas_Web/backpack.html" class="module-card">
+                    <div class="module-icon">🎒</div>
+                    <h3>BACKPACK</h3>
+                    <p>Portable encrypted credentials toolkit</p>
+                    <span class="module-badge badge-active">ACTIVE</span>
+                </a>
+                <a href="#" class="module-card" id="mod-paradox">
+                    <div class="module-icon">🌀</div>
+                    <h3>PARADOX ENGINE</h3>
+                    <p>Adversarial logic testing framework</p>
+                    <span class="module-badge badge-premium" id="badge-paradox">PREMIUM</span>
+                </a>
+                <a href="#" class="module-card" id="mod-vision">
+                    <div class="module-icon">👁️</div>
+                    <h3>VISION</h3>
+                    <p>AI-powered visual verification & regression</p>
+                    <span class="module-badge badge-premium" id="badge-vision">PREMIUM</span>
+                </a>
+                <a href="#" class="module-card" id="mod-finance">
+                    <div class="module-icon">💰</div>
+                    <h3>FINANCE GUARD</h3>
+                    <p>Deterministic financial validation engine</p>
+                    <span class="module-badge badge-premium" id="badge-finance">PREMIUM</span>
+                </a>
+                <a href="#" class="module-card">
+                    <div class="module-icon">🔐</div>
+                    <h3>GATEKEEPER</h3>
+                    <p>ZKP access control enforcement</p>
+                    <span class="module-badge badge-active">ACTIVE</span>
+                </a>
+            </div>
+
+            <div style="text-align: center; margin-top: 32px;">
+                <a href="/#pricing" class="btn btn-outline">UPGRADE TO PREMIUM →</a>
+            </div>
+        </div>
+
+        <!-- GATE: shown if NOT licensed -->
+        <div id="gateContent" style="display:none;" class="status-page" style="min-height:auto;">
+            <div class="status-icon">🔒</div>
+            <h1>ACCESS RESTRICTED</h1>
+            <p>No active subscription detected. Subscribe to unlock the VERITAS security platform.</p>
+            <div class="hero-actions">
+                <a href="/#pricing" class="btn btn-primary">VIEW PRICING →</a>
+            </div>
+        </div>
+
+    </section>
+
+    <footer class="footer">
+        <p>© 2026 VERITAS — Sovereign Architecture. Production Only.</p>
+    </footer>
+
+    <script src="js/config.js"></script>
+    <script>
+        // O(1) — Dashboard gatekeeper logic
+        (function () {
+            const isActive = localStorage.getItem('veritas_active') === 'true';
+            const license = localStorage.getItem('veritas_license');
+            const activatedAt = localStorage.getItem('veritas_activated_at');
+
+            if (isActive && license) {
+                document.getElementById('dashContent').style.display = 'block';
+                document.getElementById('gateContent').style.display = 'none';
+                document.getElementById('dashLicense').textContent = license;
+                if (activatedAt) {
+                    const d = new Date(activatedAt);
+                    document.getElementById('dashActivated').textContent =
+                        d.toLocaleDateString('en-GB') + ' ' + d.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
+                }
+
+                // Check tier
+                const tier = localStorage.getItem('veritas_tier') || 'basic';
+                if (tier === 'premium') {
+                    document.getElementById('subStatus').textContent = 'ACTIVE — PREMIUM';
+                    // Unlock premium modules
+                    ['paradox', 'vision', 'finance'].forEach(function (m) {
+                        var card = document.getElementById('mod-' + m);
+                        var badge = document.getElementById('badge-' + m);
+                        if (card) {
+                            card.classList.remove('locked');
+                            card.href = 'Veritas_Web/' + m + '.html';
+                        }
+                        if (badge) {
+                            badge.textContent = 'ACTIVE';
+                            badge.className = 'module-badge badge-active';
+                        }
+                    });
+                } else {
+                    // Lock premium modules
+                    ['paradox', 'vision', 'finance'].forEach(function (m) {
+                        var card = document.getElementById('mod-' + m);
+                        if (card) card.classList.add('locked');
+                    });
+                }
+            } else {
+                document.getElementById('dashContent').style.display = 'none';
+                document.getElementById('gateContent').style.display = 'block';
+            }
+        })();
+
+        function logout() {
+            localStorage.removeItem('veritas_active');
+            localStorage.removeItem('veritas_license');
+            localStorage.removeItem('veritas_activated_at');
+            localStorage.removeItem('veritas_tier');
+            window.location.href = '/';
+        }
+    </script>
+</body>
+
+</html>

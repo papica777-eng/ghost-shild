@@ -1,14 +1,33 @@
-.vercel
-.env*.local
+# ╔════════════════════════════════════════════════════════════════════════════
+# 🚀 QANTUM ROOT — GITIGNORE v1.0.0
+# ═══════════════════════════════════════════════════════════════════════════════
+
+# Security
 .env
-target/
-.git/
+.env.*
+.env_omncore
+gcp_key.json
+*.pem
+*.key
+
+# Node / JS
 node_modules/
 dist/
 build/
-.shadow.rs
-*.shadow.rs
+.next/
+.vercel/
+*.log
+
+# Rust
+target/
+
+# System / IDE
+.vscode/
+.idea/
 .DS_Store
 Thumbs.db
-.stripe_node_src_backup/
-.vercel/
+
+# Temp / Context
+assimilated-context.txt
+temp/
+tmp/

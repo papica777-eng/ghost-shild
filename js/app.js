@@ -1,132 +1,80 @@
-// VERITAS - The Universal Validator Logic
-// Powered by validator.js
+/**
+ * VERITAS APP — PRODUCTION v3.0.0
+ * O(1) checkout initiation. No trial. No simulation.
+ * 
+ * GATEKEEPER PROTOCOL:
+ *   Access restricted to paying entities only.
+ *   No trial. No simulation. Production only.
+ */
 
-document.addEventListener('DOMContentLoaded', () => {
-    const input = document.getElementById('validator-input');
-    const resultsPanel = document.getElementById('results-panel');
-    const resultGrid = document.querySelector('.result-grid');
-    const sanitizedOutput = document.getElementById('sanitized-output');
-    const charCount = document.getElementById('char-count');
-    const copyBtn = document.getElementById('copy-btn');
-    const entropyLabel = document.getElementById('entropy-val');
-
-    // ARCHITECT: Check for global gateway errors redirected from backend
-    const urlParams = new URLSearchParams(window.location.search);
-    if (urlParams.get('error') === 'gateway_failure') {
-        resultsPanel.classList.add('active');
-        resultGrid.innerHTML = '<div class="pill invalid" style="background: rgba(255,0,0,0.2); border: 1px solid #ff0000; color: #ff0000; width: 100%; text-align: center;">⚠ GATEWAY_CONNECTION_FAILURE: STRIPE API UNREACHABLE</div>';
-    }
-
-    // Debounce function
-    let timeout = null;
-    const debounce = (func, wait) => {
-        return (...args) => {
-            clearTimeout(timeout);
-            timeout = setTimeout(() => func(...args), wait);
-        };
+// ═══ STRIPE CHECKOUT REDIRECTS ═══
+// O(1) — Direct redirect to backend Stripe session
+function initiateCheckout(tier) {
+    const endpoints = {
+        basic: API_BASE_URL + '/stripe/checkout/basic',
+        premium: API_BASE_URL + '/stripe/checkout/premium'
     };
 
-    input.addEventListener('input', debounce((e) => {
-        const value = e.target.value.trim();
-        validateInput(value);
-        updateMetrics(value);
-    }, 300));
-
-    input.addEventListener('focus', () => {
-        resultsPanel.classList.add('active');
-    });
-
-    copyBtn.addEventListener('click', () => {
-        const text = sanitizedOutput.textContent;
-        navigator.clipboard.writeText(text).then(() => {
-            const originalText = copyBtn.textContent;
-            copyBtn.textContent = "COPIED TO CLIPBOARD";
-            setTimeout(() => {
-                copyBtn.textContent = originalText;
-            }, 2000);
-        });
-    });
-
-    function updateMetrics(value) {
-        charCount.textContent = `${value.length} chars`;
-        if (value.length > 1000) {
-            entropyLabel.className = 'danger';
-            entropyLabel.textContent = 'HIGH (Potential Buffer Overflow)';
-        } else {
-            entropyLabel.className = 'safe';
-            entropyLabel.textContent = 'SAF';
-        }
+    const url = endpoints[tier];
+    if (!url) {
+        console.error('[GATEKEEPER] Invalid tier:', tier);
+        return;
     }
 
-    function validateInput(value) {
-        // Clear previous results
-        resultGrid.innerHTML = '';
+    console.log('[GATEKEEPER] Initiating Stripe checkout:', tier.toUpperCase());
 
-        if (!value) {
-            resultGrid.innerHTML = '<div class="pill pending">Awaiting Input...</div>';
-            sanitizedOutput.textContent = '// Enter input above';
-            return;
-        }
+    // Store the selected tier for post-payment reference
+    localStorage.setItem('veritas_tier', tier);
+    localStorage.setItem('veritas_provider', 'stripe');
 
-        // Access the global validator object (ensure script loaded)
-        // The validator.js library usually exposes itself as `validator` globally in browser context
-        // Try accessing window.validator, or fallback if loaded differently.
-        const v = window.validator;
+    // Redirect to backend → Stripe Checkout
+    window.location.href = url;
+}
 
-        if (!v) {
-            resultGrid.innerHTML = '<div class="pill invalid">ERROR: Core Lib Missing</div>';
-            return;
-        }
+// ═══ PAYPAL CHECKOUT REDIRECTS ═══
+// O(1) — Direct redirect to backend PayPal order creation
+function initiatePayPalCheckout(tier) {
+    const validTiers = ['basic', 'premium'];
+    if (!validTiers.includes(tier)) {
+        console.error('[GATEKEEPER] Invalid PayPal tier:', tier);
+        return;
+    }
 
-        const checks = [
-            { label: 'EMAIL', check: v.isEmail },
-            { label: 'URL', check: v.isURL },
-            { label: 'IP ADDRESS', check: v.isIP },
-            { label: 'S.W.I.F.T CODE', check: v.isBIC }, // Business Identifier Code
-            { label: 'CREDIT CARD', check: v.isCreditCard },
-            { label: 'CRYPTOCURRENCY', check: (val) => v.isBtcAddress(val) || v.isEthereumAddress && v.isEthereumAddress(val) }, // Helper if avail
-            { label: 'UUID', check: v.isUUID },
-            { label: 'JWT TOKEN', check: v.isJWT },
-            { label: 'MAC ADDRESS', check: v.isMACAddress },
-            { label: 'PORT', check: v.isPort },
-            { label: 'JSON', check: v.isJSON },
-            { label: 'BASE64', check: v.isBase64 },
-            { label: 'HEX COLOR', check: v.isHexColor },
-            { label: 'SEMVER', check: v.isSemVer }
-        ];
+    console.log('[GATEKEEPER] Initiating PayPal checkout:', tier.toUpperCase());
 
-        let validCount = 0;
+    localStorage.setItem('veritas_tier', tier);
+    localStorage.setItem('veritas_provider', 'paypal');
 
-        checks.forEach(item => {
-            let isValid = false;
-            try {
-                isValid = item.check(value);
-            } catch (e) {
-                isValid = false;
-            }
+    // Redirect to backend → PayPal Order → PayPal Approve
+    window.location.href = API_BASE_URL + '/paypal/checkout?plan=' + tier;
+}
 
-            if (isValid) {
-                validCount++;
-                addPill(item.label, true);
+// ═══ SMOOTH SCROLL FOR ANCHOR LINKS ═══
+document.addEventListener('DOMContentLoaded', function () {
+    document.querySelectorAll('a[href^="#"]').forEach(function (anchor) {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+            var target = document.querySelector(this.getAttribute('href'));
+            if (target) {
+                target.scrollIntoView({ behavior: 'smooth', block: 'start' });
             }
         });
+    });
 
-        // If nothing matched, show generic string
-        if (validCount === 0) {
-            addPill('UNKNOWN FORMAT', false);
-            addPill('POSSIBLE MASKING', false);
-        }
-
-        // Sanitization
-        let clean = v.trim(value);
-        if (v.escape) clean = v.escape(clean);
-        sanitizedOutput.textContent = clean;
+    // Nav background on scroll
+    var nav = document.querySelector('.nav');
+    if (nav) {
+        window.addEventListener('scroll', function () {
+            if (window.scrollY > 50) {
+                nav.style.background = 'rgba(3,3,8,0.95)';
+                nav.style.borderBottomColor = 'rgba(0,255,204,0.15)';
+            } else {
+                nav.style.background = 'rgba(3,3,8,0.85)';
+                nav.style.borderBottomColor = 'rgba(255,255,255,0.06)';
+            }
+        });
     }
 
-    function addPill(label, isValid) {
-        const div = document.createElement('div');
-        div.className = `pill ${isValid ? 'valid' : 'invalid'}`;
-        div.innerHTML = `<span>${label}</span> <span>${isValid ? '✓' : '⚠'}</span>`;
-        resultGrid.appendChild(div);
-    }
+    console.log('[VERITAS] v3.0.0 — PRODUCTION ACTIVE');
+    console.log('[VERITAS] Entropy: 0.00 — No simulation. No fluff.');
 });

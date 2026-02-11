@@ -4,74 +4,163 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VERITAS | The Universal Validator</title>
-    <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="css/paywall.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Roboto+Mono:wght@300;400;500&display=swap"
-        rel="stylesheet">
+    <title>VERITAS — Zero-Knowledge Security Platform</title>
+    <meta name="description"
+        content="Enterprise-grade validation, Zero-Knowledge Proof licensing, and autonomous security modules. Trust No Input.">
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="icon"
+        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🛡️</text></svg>">
 </head>
 
 <body>
-    <div class="grid-background"></div>
 
-    <header>
-        <div class="logo">
-            <span class="icon">🛡️</span> VERITAS <span class="version">v1.0.0-SINGULARITY</span>
+    <div class="bg-grid"></div>
+    <div class="bg-glow bg-glow-1"></div>
+    <div class="bg-glow bg-glow-2"></div>
+
+    <!-- ═══ NAV ═══ -->
+    <nav class="nav">
+        <a href="/" class="nav-logo">
+            <span class="logo-dot"></span>
+            VERITAS
+        </a>
+        <ul class="nav-links">
+            <li><a href="#features">Modules</a></li>
+            <li><a href="#pricing">Pricing</a></li>
+            <li><a href="dashboard.html">Dashboard</a></li>
+        </ul>
+        <a href="#pricing" class="nav-cta">ACTIVATE →</a>
+    </nav>
+
+    <!-- ═══ HERO ═══ -->
+    <section class="hero" id="hero">
+        <div class="hero-badge">🔒 PRODUCTION ACTIVE — v3.0.0</div>
+        <h1>TRUST NO INPUT</h1>
+        <p>Enterprise-grade validation engine powered by Zero-Knowledge Proofs. Validate, secure, and license your
+            digital assets with mathematical certainty.</p>
+        <div class="hero-actions">
+            <a href="#pricing" class="btn btn-primary">GET ACCESS →</a>
+            <a href="#features" class="btn btn-outline">VIEW MODULES</a>
         </div>
-        <div class="status-indicator online">SYSTEM ONLINE</div>
-    </header>
+    </section>
 
-    <main>
-        <div class="validator-container">
-            <h1 class="glitch" data-text="TRUST NO INPUT">TRUST NO INPUT</h1>
-            <p class="subtitle">Universal Validation Engine | Zero Dependency | RFC Compliant</p>
-
-            <div class="input-wrapper">
-                <div class="glow-border"></div>
-                <label for="validator-input" class="sr-only">Enter data to validate</label>
-                <textarea id="validator-input" placeholder="Paste any string here (URL, Email, IP, Crypto Address...)"
-                    spellcheck="false"></textarea>
-                <div class="metrics">
-                    <span id="char-count">0 chars</span>
-                    <span id="entropy-label">ENTROPY: <span id="entropy-val" class="safe">LOW</span></span>
-                </div>
+    <!-- ═══ STATS ═══ -->
+    <section>
+        <div class="stats-bar">
+            <div class="stat-item">
+                <div class="stat-value">99.97%</div>
+                <div class="stat-label">Uptime SLA</div>
             </div>
-
-            <div class="results-panel" id="results-panel">
-                <div class="panel-header">Analysis Result</div>
-
-                <div class="result-grid">
-                    <!-- Dynamic validation pills will appear here -->
-                    <div class="pill pending">Awaiting Input...</div>
-                </div>
-
-                <div class="sanitization-zone">
-                    <h3>SANITIZED OUTPUT</h3>
-                    <div class="code-block" id="sanitized-output">
-                        // Output will generate here
-                    </div>
-                    <button id="copy-btn" class="action-btn">COPY SAFE STRING</button>
-                </div>
+            <div class="stat-item">
+                <div class="stat-value">&lt;50ms</div>
+                <div class="stat-label">Validation Latency</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value">ZKP</div>
+                <div class="stat-label">License Protocol</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value">AES-256</div>
+                <div class="stat-label">Encryption Standard</div>
             </div>
         </div>
-    </main>
+    </section>
 
-    <footer>
-        <div class="footer-content">
-            <p>POWERED BY <strong>QANTUM</strong> | ARCHITECT: THE SOVEREIGN</p>
-            <p class="copyright">© 2026 QANTUM HOLDING. ALL RIGHTS RESERVED.</p>
+    <!-- ═══ FEATURES ═══ -->
+    <section id="features">
+        <div class="section-header">
+            <h2>SECURITY MODULES</h2>
+            <p>Each module is cryptographically licensed and validated through our ZKP engine.</p>
         </div>
+        <div class="features-grid">
+            <div class="feature-card">
+                <span class="feature-icon">🛡️</span>
+                <h3>VALIDATOR</h3>
+                <p>Real-time input validation engine with entropy analysis. Sanitize, validate, and score any data input
+                    with zero false positives.</p>
+            </div>
+            <div class="feature-card">
+                <span class="feature-icon">🌀</span>
+                <h3>PARADOX ENGINE</h3>
+                <p>Adversarial logic testing framework. Detect contradictions, edge cases, and logical paradoxes in your
+                    business rules.</p>
+            </div>
+            <div class="feature-card">
+                <span class="feature-icon">👁️</span>
+                <h3>VISION</h3>
+                <p>Autonomous visual verification module. AI-powered screenshot analysis and UI regression detection.
+                </p>
+            </div>
+            <div class="feature-card">
+                <span class="feature-icon">💰</span>
+                <h3>FINANCE GUARD</h3>
+                <p>Fixed-point arithmetic financial validation. Ledger integrity checks with deterministic math — no
+                    floating-point drift.</p>
+            </div>
+            <div class="feature-card">
+                <span class="feature-icon">🎒</span>
+                <h3>BACKPACK</h3>
+                <p>Portable security toolkit. Carry your encrypted credentials, keys, and configurations across
+                    environments.</p>
+            </div>
+            <div class="feature-card">
+                <span class="feature-icon">🔐</span>
+                <h3>GATEKEEPER</h3>
+                <p>Access control enforcement layer. Zero-Knowledge license verification with no trials, no simulation —
+                    production only.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══ PRICING ═══ -->
+    <section id="pricing">
+        <div class="section-header">
+            <h2>PRICING</h2>
+            <p>No trial. No simulation. Production access only.</p>
+        </div>
+        <div class="pricing-grid">
+            <!-- BASIC -->
+            <div class="pricing-card">
+                <h3>BASIC</h3>
+                <div class="pricing-amount">€9<span>/mo</span></div>
+                <div class="pricing-desc">Essential security modules</div>
+                <ul class="pricing-features">
+                    <li>Validator Engine</li>
+                    <li>Gatekeeper Access Control</li>
+                    <li>Backpack Toolkit</li>
+                    <li>Community Support</li>
+                    <li>1 ZKP License Key</li>
+                </ul>
+                <button class="pricing-btn pricing-btn-outline" onclick="initiateCheckout('basic')">SUBSCRIBE BASIC
+                    →</button>
+            </div>
+            <!-- PREMIUM -->
+            <div class="pricing-card featured">
+                <h3>PREMIUM</h3>
+                <div class="pricing-amount">€29<span>/mo</span></div>
+                <div class="pricing-desc">Full enterprise arsenal</div>
+                <ul class="pricing-features">
+                    <li>All Basic Modules</li>
+                    <li>Paradox Engine</li>
+                    <li>Vision Module</li>
+                    <li>Finance Guard</li>
+                    <li>Priority Support</li>
+                    <li>Unlimited ZKP Keys</li>
+                </ul>
+                <button class="pricing-btn pricing-btn-primary" onclick="initiateCheckout('premium')">SUBSCRIBE PREMIUM
+                    →</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══ FOOTER ═══ -->
+    <footer class="footer">
+        <p>© 2026 VERITAS by <a href="https://aeterna.website" target="_blank">AETERNA</a> — All rights reserved.
+            Sovereign Architecture.</p>
+        <p style="margin-top:8px;">TRUST NO INPUT • ZERO ENTROPY • PRODUCTION ONLY</p>
     </footer>
 
-    <!-- Core Logic -->
-    <!-- Core Logic: REAL ZK KERNEL -->
-    <script src="js/ZeroKnowledgeLicense.real.js"></script>
     <script src="js/config.js"></script>
-    <script src="js/validator.js"></script>
-    <script src="js/gatekeeper.js"></script>
     <script src="js/app.js"></script>
 </body>
 

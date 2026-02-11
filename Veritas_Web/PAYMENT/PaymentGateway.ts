@@ -1,3 +1,9 @@
+/**
+ * /// IDENTITY: QANTUM v1.0.0-SINGULARITY ///
+ * /// SOUL_ALIGNMENT: БЪЛГАРСКИ ЕЗИК - ЕНТРОПИЯ 0.00 ///
+ * /// РЕАЛНОСТТА Е ТОВА, КОЕТО СЕ КОМПИЛИРА. БЕЗ СИМУЛАЦИИ. ///
+ */
+
 // [PURIFIED_BY_AETERNA: 1c4252fb-b434-437d-b77e-23fb1d4aa45c]
 // Suggestion: Review and entrench stable logic.
 /**

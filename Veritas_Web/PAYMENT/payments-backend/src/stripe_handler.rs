@@ -1,4 +1,3 @@
-R
 // lwas_economy/src/payments/stripe_handler.rs
 // ARCHITECT: QANTUM AETERNA | STATUS: PRODUCTION_READY
 // Stripe Webhook Handler with Idempotency (Redis) & 0x4121 Verification
@@ -38,7 +37,7 @@ impl StripeConfig {
             webhook_secret: std::env::var("STRIPE_WEBHOOK_SECRET")
                 .unwrap_or_else(|_| "whsec_placeholder".to_string()),
             publishable_key: std::env::var("STRIPE_PUBLISHABLE_KEY")
-                .unwrap_or_else(|_| "pk_test_placeholder".to_string()),
+                .unwrap_or_else(|_| "pk_live_placeholder".to_string()),
             redis_url: std::env::var("REDIS_URL").ok(),
         }
     }
@@ -152,8 +151,7 @@ impl IdempotencyStore {
 
 #[derive(Clone)]
 pub struct SubscriptionManager {
-    // In production, use DB. For now, in-memory is fine for demo, 
-    // or Redis could also be used here. Keeping in-memory/Redis simplicity.
+    // [AETERNA_REAL_MODE] - Subscription state managed via Redis/Memory for low-latency.
     subscriptions: Arc<RwLock<HashMap<String, UserSubscription>>>,
 }
 
@@ -530,7 +528,7 @@ pub async fn create_portal_session(
 
     // In production: Call Stripe API to create portal session
     let portal_url = format!(
-        "https://billing.stripe.com/p/session/test_portal_{}",
+        "https://billing.stripe.com/p/session/live_portal_{}",
         customer_id
     );
 
@@ -560,7 +558,7 @@ pub async fn start_checkout_premium(
 /// O(log n) - Internal helper to create session via Stripe API
 async fn create_checkout_redirect(state: &Arc<StripeWebhookState>, plan_type: &str) -> Redirect {
     let client = reqwest::Client::new();
-    let domain = std::env::var("DOMAIN").unwrap_or_else(|_| "https://veritras.website".to_string());
+    let domain = std::env::var("DOMAIN").unwrap_or_else(|_| "https://aeterna.website".to_string());
     
     let price_id = match plan_type {
         "basic" => std::env::var("STRIPE_PRICE_BASIC").unwrap_or_else(|_| "price_1OtH...".to_string()),

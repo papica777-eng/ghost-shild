@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VERITAS — Payment Confirmed</title>
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="icon"
+        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✅</text></svg>">
+</head>
+
+<body>
+
+    <div class="bg-grid"></div>
+    <div class="bg-glow bg-glow-1"></div>
+    <div class="bg-glow bg-glow-2"></div>
+
+    <nav class="nav">
+        <a href="/" class="nav-logo">
+            <span class="logo-dot"></span>
+            VERITAS
+        </a>
+        <ul class="nav-links">
+            <li><a href="/">Home</a></li>
+            <li><a href="dashboard.html">Dashboard</a></li>
+        </ul>
+    </nav>
+
+    <section class="status-page">
+        <div class="status-icon">✅</div>
+        <h1 style="color: var(--accent-cyan);">PAYMENT CONFIRMED</h1>
+        <p>Your subscription is now active. Your ZKP License Key has been generated and cryptographically bound to your
+            session.</p>
+
+        <div class="license-key" id="licenseKey">—</div>
+
+        <p style="font-size:0.8rem; color: var(--text-muted); margin-bottom: 32px;">Click the key above to copy. Store
+            it securely — this is your access credential.</p>
+
+        <div class="hero-actions">
+            <a href="dashboard.html" class="btn btn-primary">ENTER DASHBOARD →</a>
+            <a href="/" class="btn btn-outline">BACK TO HOME</a>
+        </div>
+    </section>
+
+    <script src="js/config.js"></script>
+    <script>
+        // O(log n) — Verify session via backend and retrieve deterministic license key
+        (async function () {
+            const licenseEl = document.getElementById('licenseKey');
+            const params = new URLSearchParams(window.location.search);
+            const sessionId = params.get('session_id');
+            const provider = params.get('provider');
+
+            // PayPal flow: order-based verification (no session_id)
+            if (provider === 'paypal') {
+                const orderId = params.get('order_id');
+                licenseEl.textContent = orderId
+                    ? 'VRT-PP-' + orderId.substring(0, 16).toUpperCase()
+                    : 'AWAITING_CAPTURE';
+                if (orderId) {
+                    localStorage.setItem('veritas_license', licenseEl.textContent);
+                    localStorage.setItem('veritas_active', 'true');
+                    localStorage.setItem('veritas_provider', 'paypal');
+                    localStorage.setItem('veritas_activated_at', new Date().toISOString());
+                }
+                setupCopyHandler(licenseEl);
+                return;
+            }
+
+            // Stripe flow: verify session via backend
+            if (!sessionId) {
+                licenseEl.textContent = 'ERROR: NO_SESSION_ID';
+                licenseEl.style.color = '#ff4444';
+                return;
+            }
+
+            licenseEl.textContent = 'VERIFYING...';
+
+            try {
+                const res = await fetch(
+                    `${API_BASE_URL}/stripe/verify?session_id=${encodeURIComponent(sessionId)}`,
+                    { method: 'GET', headers: { 'Accept': 'application/json' } }
+                );
+
+                if (!res.ok) {
+                    const errText = await res.text();
+                    throw new Error(`Verification failed (${res.status}): ${errText}`);
+                }
+
+                const data = await res.json();
+
+                if (data.valid && data.license_key) {
+                    licenseEl.textContent = data.license_key;
+
+                    // Persist verified data
+                    localStorage.setItem('veritas_license', data.license_key);
+                    localStorage.setItem('veritas_active', 'true');
+                    localStorage.setItem('veritas_tier', data.plan || 'basic');
+                    localStorage.setItem('veritas_email', data.email || '');
+                    localStorage.setItem('veritas_provider', 'stripe');
+                    localStorage.setItem('veritas_activated_at', new Date().toISOString());
+                    localStorage.setItem('veritas_session_id', sessionId);
+
+                    console.log('[VERITAS] ✅ License verified:', data.license_key);
+                } else {
+                    licenseEl.textContent = 'VERIFICATION_FAILED';
+                    licenseEl.style.color = '#ff4444';
+                    console.error('[VERITAS] ❌ Session not valid:', data);
+                }
+            } catch (err) {
+                licenseEl.textContent = 'NETWORK_ERROR';
+                licenseEl.style.color = '#ff4444';
+                console.error('[VERITAS] ❌ Verify error:', err);
+            }
+
+            setupCopyHandler(licenseEl);
+        })();
+
+        function setupCopyHandler(el) {
+            el.addEventListener('click', function () {
+                const key = this.textContent;
+                if (key.startsWith('VRT-')) {
+                    navigator.clipboard.writeText(key).then(() => {
+                        this.style.borderColor = '#00ff88';
+                        this.style.boxShadow = '0 0 20px rgba(0,255,136,0.3)';
+                        setTimeout(() => {
+                            this.style.borderColor = '';
+                            this.style.boxShadow = '';
+                        }, 1500);
+                    });
+                }
+            });
+        }
+    </script>
+</body>
+
+</html>

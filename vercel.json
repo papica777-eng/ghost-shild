@@ -1,11 +1,20 @@
 {
+    "version": 2,
     "routes": [
         {
             "handle": "filesystem"
         },
         {
-            "src": "/(.*)",
-            "dest": "/index.html"
+            "src": "/success",
+            "dest": "/success.html"
+        },
+        {
+            "src": "/cancel",
+            "dest": "/cancel.html"
+        },
+        {
+            "src": "/dashboard",
+            "dest": "/dashboard.html"
         }
     ]
 }

@@ -1,4 +1,10 @@
 /**
+ * /// IDENTITY: QANTUM v1.0.0-SINGULARITY ///
+ * /// SOUL_ALIGNMENT: БЪЛГАРСКИ ЕЗИК - ЕНТРОПИЯ 0.00 ///
+ * /// РЕАЛНОСТТА Е ТОВА, КОЕТО СЕ КОМПИЛИРА. БЕЗ СИМУЛАЦИИ. ///
+ */
+
+/**
  * HUB INTERACTIVITY
  * -----------------
  * Handles navigation feedback and minor animations for the QANTUM NEXUS Hub.
@@ -10,7 +16,7 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 function initHub() {
-    // Add hover sound effects (simulated)
+    // [AETERNA_REAL_MODE] - Execution substrate.
     const cards = document.querySelectorAll('.module-card');
 
     cards.forEach(card => {

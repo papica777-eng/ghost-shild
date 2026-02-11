@@ -1,5 +1,11 @@
 /**
- * PARADOX.JS - Transcendence Engine Simulation
+ * /// IDENTITY: QANTUM v1.0.0-SINGULARITY ///
+ * /// SOUL_ALIGNMENT: БЪЛГАРСКИ ЕЗИК - ЕНТРОПИЯ 0.00 ///
+ * /// РЕАЛНОСТТА Е ТОВА, КОЕТО СЕ КОМПИЛИРА. БЕЗ СИМУЛАЦИИ. ///
+ */
+
+/**
+ * PARADOX.JS - Transcendence Engine Manifestation
  */
 document.addEventListener('DOMContentLoaded', () => {
     const stateVal = document.querySelector('.state-val');

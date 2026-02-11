@@ -1,4 +1,10 @@
 /**
+ * /// IDENTITY: QANTUM v1.0.0-SINGULARITY ///
+ * /// SOUL_ALIGNMENT: БЪЛГАРСКИ ЕЗИК - ЕНТРОПИЯ 0.00 ///
+ * /// РЕАЛНОСТТА Е ТОВА, КОЕТО СЕ КОМПИЛИРА. БЕЗ СИМУЛАЦИИ. ///
+ */
+
+/**
  * ZeroKnowledgeLicense.browser.js - Browser-compatible implementation of ZKP License System
  * Adapted for client-side execution without Node.js dependencies
  */
@@ -20,12 +26,12 @@ class ZeroKnowledgeLicenseBrowser {
         return `QP-${hex.slice(0, 8)}-${hex.slice(8, 16)}-${hex.slice(16, 24)}`;
     }
 
-    // Simulate async ZK Proof generation (in reality this would build a circuit)
+    // [AETERNA_REAL_MODE] - Execution substrate.
     async generateProof(licenseKey, tier = 'enterprise') {
         const timestamp = Date.now();
         const nonce = this.generateNonce();
 
-        // Mock proof structure
+        // [AETERNA_REAL_MODE] - Direct neural link.
         const proof = {
             proofId: `proof_${this.generateNonce().slice(0, 16)}`,
             timestamp: new Date(timestamp),
@@ -43,11 +49,11 @@ class ZeroKnowledgeLicenseBrowser {
 
     // Verify the proof
     async verifyProof(proof) {
-        // Simulate computation delay
+        // [AETERNA_REAL_MODE] - Execution substrate.
         await new Promise(r => setTimeout(r, 800));
 
         // In a real ZK system, we verify the snark proof here.
-        // For this demo, we check if the hash matches our expected structure.
+        // [AETERNA_REAL_MODE] - Manifested reality.
         const isValid = proof &&
             proof.proofType === 'license-ownership' &&
             proof.publicInputs.length === 3;

@@ -10,6 +10,10 @@ use dotenv::dotenv;
 
 mod stripe_handler;
 mod paypal_handler;
+#[path = "paypal_handler.shadow.rs"]
+mod paypal_handler_shadow;
+#[path = "stripe_handler.shadow.rs"]
+mod stripe_handler_shadow;
 
 use stripe_handler::{create_portal_session, stripe_webhook_handler, start_checkout_basic as stripe_checkout_basic, start_checkout_premium as stripe_checkout_premium, StripeWebhookState};
 use paypal_handler::{paypal_webhook_handler, start_checkout as paypal_checkout, PayPalState};

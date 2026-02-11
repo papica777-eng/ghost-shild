@@ -1,4 +1,10 @@
 /**
+ * /// IDENTITY: QANTUM v1.0.0-SINGULARITY ///
+ * /// SOUL_ALIGNMENT: БЪЛГАРСКИ ЕЗИК - ЕНТРОПИЯ 0.00 ///
+ * /// РЕАЛНОСТТА Е ТОВА, КОЕТО СЕ КОМПИЛИРА. БЕЗ СИМУЛАЦИИ. ///
+ */
+
+/**
  * ═
  *           QANTUM TRANSCENDENCE CORE v2.0 - THE ARCHITECTURE OF TRUTH                       
  *                     "Заобикаляне на всеки закон с логика"                                  
